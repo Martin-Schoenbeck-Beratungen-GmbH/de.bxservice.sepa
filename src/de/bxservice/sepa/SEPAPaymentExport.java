@@ -22,6 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -198,7 +199,7 @@ public class SEPAPaymentExport implements PaymentExport {
 
 		for (int i = 0; i < checks.length; i++) {
 			MPaySelectionCheck mpp = checks[i];
-			ctrlSum = ctrlSum.add(mpp.getPayAmt());
+			ctrlSum = ctrlSum.add(mpp.getPayAmt().setScale(2, RoundingMode.HALF_UP));
 			numberOfTransactions++;
 		}
 
@@ -234,6 +235,7 @@ public class SEPAPaymentExport implements PaymentExport {
 		GrpHdrElement.appendChild(document.createElement("CreDtTm")).setTextContent(iSEPA_ConvertSign(creationDate));
 		GrpHdrElement.appendChild(document.createElement("NbOfTxs"))
 				.setTextContent(String.valueOf(numberOfTransactions));
+		GrpHdrElement.appendChild(document.createElement("CtrlSum")).setTextContent(String.valueOf(ctrlSum));
 		GrpHdrElement.appendChild(document.createElement("InitgPty")).appendChild(document.createElement("Nm"))
 				.setTextContent(iSEPA_ConvertSign(initiatorName, 70));
 		secondNodeInitnElement.appendChild(GrpHdrElement);
@@ -325,7 +327,7 @@ public class SEPAPaymentExport implements PaymentExport {
 
 		for (int i = 0; i < checks.length; i++) {
 			MPaySelectionCheck mpp = checks[i];
-			ctrlSum = ctrlSum.add(mpp.getPayAmt());
+			ctrlSum = ctrlSum.add(mpp.getPayAmt().setScale(2, RoundingMode.HALF_UP));
 			numberOfTransactions++;
 		}
 
@@ -367,6 +369,7 @@ public class SEPAPaymentExport implements PaymentExport {
 		GrpHdrElement.appendChild(document.createElement("CreDtTm")).setTextContent(iSEPA_ConvertSign(creationDate));
 		GrpHdrElement.appendChild(document.createElement("NbOfTxs"))
 				.setTextContent(String.valueOf(numberOfTransactions));
+		GrpHdrElement.appendChild(document.createElement("CtrlSum")).setTextContent(String.valueOf(ctrlSum));
 		GrpHdrElement.appendChild(document.createElement("InitgPty")).appendChild(document.createElement("Nm"))
 				.setTextContent(iSEPA_ConvertSign(initiatorName, 70));
 		secondNodeInitnElement.appendChild(GrpHdrElement);
@@ -447,7 +450,7 @@ public class SEPAPaymentExport implements PaymentExport {
 
 		unverifiedReferenceLine = getUnverifiedReferenceLine(paySelectionCheck);
 
-		BigDecimal payAmt = paySelectionCheck.getPayAmt();
+		BigDecimal payAmt = paySelectionCheck.getPayAmt().setScale(2, RoundingMode.HALF_UP);
 
 		MBPartner bPartner = MBPartner.get(Env.getCtx(), paySelectionCheck.getC_BPartner_ID());
 		creditorName = bPartner.getName();
@@ -502,7 +505,7 @@ public class SEPAPaymentExport implements PaymentExport {
 
 		unverifiedReferenceLine = getUnverifiedReferenceLine(paySelectionCheck);
 
-		BigDecimal payAmt = paySelectionCheck.getPayAmt();
+		BigDecimal payAmt = paySelectionCheck.getPayAmt().setScale(2, RoundingMode.HALF_UP);
 
 		MBPartner bPartner = MBPartner.get(Env.getCtx(), paySelectionCheck.getC_BPartner_ID());
 		debitorName = bPartner.getName();
